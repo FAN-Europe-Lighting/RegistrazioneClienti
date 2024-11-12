@@ -1,33 +1,28 @@
 const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
-  const vatCode = event.queryStringParameters.vatCode;
+  const { vatCode } = event.queryStringParameters;
 
-  if (!vatCode) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ error: 'Partita IVA non fornita.' }),
-    };
-  }
-
-  const OPENAPI_TOKEN = process.env.OPENAPI_TOKEN;
   const url = `https://test.company.openapi.com/IT-start/${vatCode}`;
+  const token = process.env.OPENAPI_TOKEN; // Usa la variabile ambiente per il token
 
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${OPENAPI_TOKEN}`,
-        'Accept': 'application/json',
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
       },
     });
 
     if (!response.ok) {
-      throw new Error(`Errore API: ${response.status} ${response.statusText}`);
+      return {
+        statusCode: response.status,
+        body: JSON.stringify({ error: response.statusText }),
+      };
     }
 
     const data = await response.json();
-
     return {
       statusCode: 200,
       body: JSON.stringify(data),
