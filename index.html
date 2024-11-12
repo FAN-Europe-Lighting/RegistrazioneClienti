@@ -469,52 +469,44 @@
 
   <script>
     // Funzione per effettuare la chiamata API a OpenAPI
-		async function fetchCompanyData(vatCode) {
-		  const url = `https://test.company.openapi.com/IT-start/${vatCode}`;
-		  const token = "OPENAPI_TOKEN";
+	async function fetchCompanyData(vatCode) {
+	  // URL dell'endpoint serverless su Netlify
+	  const url = `/.netlify/functions/fetchCompanyData?vatCode=${vatCode}`;
+	
+	  try {
+	    const response = await fetch(url, {
+	      method: 'GET', // Metodo HTTP
+	    });
+	
+	    if (!response.ok) {
+	      throw new Error(`Errore API: ${response.status} ${response.statusText}`);
+	    }
+	
+	    const data = await response.json();
+	
+	    if (data && data.data && data.data.length > 0) {
+	      const company = data.data[0];
+	      
+	      // Aggiorna i campi del form con i dati ricevuti
+	      document.getElementById("companyName").value = company.companyName || "";
+	      document.getElementById("taxCode").value = company.taxCode || "";
+	      document.getElementById("sdiCode").value = company.sdiCode || "";
+	      document.getElementById("address").value = company.address.registeredOffice.streetName || "";
+	      document.getElementById("town").value = company.address.registeredOffice.town || "";
+	      document.getElementById("province").value = company.address.registeredOffice.province || "";
+	      document.getElementById("zipCode").value = company.address.registeredOffice.zipCode || "";
+	      document.getElementById("region").value = company.address.registeredOffice.region.description || "";
+	
+	      alert("Dati caricati con successo!");
+	    } else {
+	      alert("Nessun dato trovato per questa Partita IVA.");
+	    }
+	  } catch (error) {
+	    console.error("Errore durante la chiamata API:", error);
+	    alert(`Errore durante la chiamata API: ${error.message}`);
+	  }
+	}
 
-		  try {
-			const response = await fetch(url, {
-			  method: "GET",
-			  headers: {
-				"Authorization": `Bearer ${token}`,
-				"Accept": "application/json"
-			  }
-			});
-
-			if (!response.ok) {
-			  throw new Error(`Errore API: ${response.status} ${response.statusText}`);
-			}
-
-			const data = await response.json();
-
-			if (data && data.data && data.data.length > 0) {
-			  const company = data.data[0];
-
-			  // Compila i campi con i dati ricevuti
-			  document.getElementById("companyName").value = company.companyName || "";
-			  document.getElementById("taxCode").value = company.taxCode || "";
-			  document.getElementById("sdiCode").value = company.sdiCode || "";
-			  document.getElementById("address").value = company.address.registeredOffice.streetName || "";
-			  document.getElementById("town").value = company.address.registeredOffice.town || "";
-			  document.getElementById("province").value = company.address.registeredOffice.province || "";
-			  document.getElementById("zipCode").value = company.address.registeredOffice.zipCode || "";
-			  document.getElementById("region").value = company.address.registeredOffice.region.description || "";
-
-			  // Blocca i campi dopo la compilazione automatica
-			  toggleReadonlyFields(true);
-
-			  alert("Dati compilati automaticamente!");
-			} else {
-			  alert("Nessun dato trovato per questa Partita IVA. Puoi inserire i dati manualmente.");
-			  toggleReadonlyFields(false); // Permetti modifica manuale
-			}
-		  } catch (error) {
-			console.error("Errore durante la chiamata API:", error);
-			alert(`Errore durante la chiamata API: ${error.message}`);
-			toggleReadonlyFields(false); // Permetti modifica manuale in caso di errore
-		  }
-		}
 
 		// Funzione per abilitare/disabilitare i campi readonly
 		function toggleReadonlyFields(readonly) {
