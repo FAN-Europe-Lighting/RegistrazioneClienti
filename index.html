@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrazione Cliente F.A.N. Europe Lighting srl</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 600px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    header img {
+      max-width: 150px;
+      height: auto;
+    }
+    label, input, textarea, select, button {
+      display: block;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    input, textarea, select {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      background-color: #FFD700; /* Giallo */
+      color: #000; /* Nero */
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #FFC107; /* Giallo scuro */
+    }
+    .section-title {
+      margin-top: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo in alto -->
+  <header>
+    <img src="https://cdn11.bigcommerce.com/s-xyvbdchgxw/images/stencil/original/image-manager/logo-faneurope-ridim.jpg?t=1714721738" alt="Logo Aziendale">
+  </header>
+
+  <h1 style="text-align: center;">Registrazione Cliente</h1>
+  <form id="customerForm">
+    <!-- Sezione principale -->
+    <label for="vatCode">Partita IVA:</label>
+    <input type="text" id="vatCode" placeholder="Inserisci la Partita IVA (solo parte numerica!)" required>
+    <button type="button" id="fetchDataButton">Compila automaticamente</button>
+
+    <!-- Campi compilati automaticamente -->
+    <label for="companyName">Nome Azienda:</label>
+    <input type="text" id="companyName" placeholder="Nome Azienda" readonly>
+
+    <label for="taxCode">Codice Fiscale:</label>
+    <input type="text" id="taxCode" placeholder="Codice Fiscale" readonly>
+
+    <label for="sdiCode">Codice SDI:</label>
+    <input type="text" id="sdiCode" placeholder="Codice SDI" readonly>
+
+    <label for="address">Indirizzo:</label>
+    <input type="text" id="address" placeholder="Indirizzo" readonly>
+
+    <label for="town">Città:</label>
+    <input type="text" id="town" placeholder="Città" readonly>
+
+    <label for="province">Provincia:</label>
+    <input type="text" id="province" placeholder="Provincia" readonly>
+
+    <label for="zipCode">CAP:</label>
+    <input type="text" id="zipCode" placeholder="CAP" readonly>
+
+    <label for="region">Regione:</label>
+    <input type="text" id="region" placeholder="Regione" readonly>
+
+    <!-- Nuova Sezione: Indirizzo di Spedizione -->
+    <div class="section-title">Indirizzo di Spedizione</div>
+
+    <label for="shippingStreet">Via:</label>
+    <input type="text" id="shippingStreet" placeholder="Inserisci la via" required>
+
+    <label for="shippingStreetNumber">Numero Civico:</label>
+    <input type="text" id="shippingStreetNumber" placeholder="Inserisci il numero civico" required>
+	
+	<label for="shippingCountry">Paese:</label>
+	<select id="shippingCountry" required>
+	  <option value="">Seleziona il paese</option>
+	  <option value="AF">Afghanistan</option>
+	  <option value="AL">Albania</option>
+	  <option value="DZ">Algeria</option>
+	  <option value="AS">American Samoa</option>
+	  <option value="AD">Andorra</option>
+	  <option value="AO">Angola</option>
+	  <option value="AI">Anguilla</option>
+	  <option value="AQ">Antarctica</option>
+	  <option value="AG">Antigua and Barbuda</option>
+	  <option value="AR">Argentina</option>
+	  <option value="AM">Armenia</option>
+	  <option value="AW">Aruba</option>
+	  <option value="AU">Australia</option>
+	  <option value="AT">Austria</option>
+	  <option value="AZ">Azerbaijan</option>
+	  <option value="BS">Bahamas</option>
+	  <option value="BH">Bahrain</option>
+	  <option value="BD">Bangladesh</option>
+	  <option value="BB">Barbados</option>
+	  <option value="BY">Belarus</option>
+	  <option value="BE">Belgium</option>
+	  <option value="BZ">Belize</option>
+	  <option value="BJ">Benin</option>
+	  <option value="BM">Bermuda</option>
+	  <option value="BT">Bhutan</option>
+	  <option value="BO">Bolivia</option>
+	  <option value="BA">Bosnia and Herzegovina</option>
+	  <option value="BW">Botswana</option>
+	  <option value="BR">Brazil</option>
+	  <option value="BN">Brunei</option>
+	  <option value="BG">Bulgaria</option>
+	  <option value="BF">Burkina Faso</option>
+	  <option value="BI">Burundi</option>
+	  <option value="CV">Cabo Verde</option>
+	  <option value="KH">Cambodia</option>
+	  <option value="CM">Cameroon</option>
+	  <option value="CA">Canada</option>
+	  <option value="KY">Cayman Islands</option>
+	  <option value="CF">Central African Republic</option>
+	  <option value="TD">Chad</option>
+	  <option value="CL">Chile</option>
+	  <option value="CN">China</option>
+	  <option value="CO">Colombia</option>
+	  <option value="KM">Comoros</option>
+	  <option value="CG">Congo</option>
+	  <option value="CD">Congo (Democratic Republic)</option>
+	  <option value="CR">Costa Rica</option>
+	  <option value="CI">Côte d'Ivoire</option>
+	  <option value="HR">Croatia</option>
+	  <option value="CU">Cuba</option>
+	  <option value="CY">Cyprus</option>
+	  <option value="CZ">Czech Republic</option>
+	  <option value="DK">Denmark</option>
+	  <option value="DJ">Djibouti</option>
+	  <option value="DM">Dominica</option>
+	  <option value="DO">Dominican Republic</option>
+	  <option value="EC">Ecuador</option>
+	  <option value="EG">Egypt</option>
+	  <option value="SV">El Salvador</option>
+	  <option value="GQ">Equatorial Guinea</option>
+	  <option value="ER">Eritrea</option>
+	  <option value="EE">Estonia</option>
+	  <option value="SZ">Eswatini</option>
+	  <option value="ET">Ethiopia</option>
+	  <option value="FJ">Fiji</option>
+	  <option value="FI">Finland</option>
+	  <option value="FR">France</option>
+	  <option value="GA">Gabon</option>
+	  <option value="GM">Gambia</option>
+	  <option value="GE">Georgia</option>
+	  <option value="DE">Germany</option>
+	  <option value="GH">Ghana</option>
+	  <option value="GR">Greece</option>
+	  <option value="GD">Grenada</option>
+	  <option value="GT">Guatemala</option>
+	  <option value="GN">Guinea</option>
+	  <option value="GW">Guinea-Bissau</option>
+	  <option value="GY">Guyana</option>
+	  <option value="HT">Haiti</option>
+	  <option value="HN">Honduras</option>
+	  <option value="HU">Hungary</option>
+	  <option value="IS">Iceland</option>
+	  <option value="IN">India</option>
+	  <option value="ID">Indonesia</option>
+	  <option value="IR">Iran</option>
+	  <option value="IQ">Iraq</option>
+	  <option value="IE">Ireland</option>
+	  <option value="IL">Israel</option>
+	  <option value="IT">Italia</option>
+	  <option value="JM">Jamaica</option>
+	  <option value="JP">Japan</option>
+	  <option value="JO">Jordan</option>
+	  <option value="KZ">Kazakhstan</option>
+	  <option value="KE">Kenya</option>
+	  <option value="KI">Kiribati</option>
+	  <option value="KP">Korea (North)</option>
+	  <option value="KR">Korea (South)</option>
+	  <option value="KW">Kuwait</option>
+	  <option value="KG">Kyrgyzstan</option>
+	  <option value="LA">Laos</option>
+	  <option value="LV">Latvia</option>
+	  <option value="LB">Lebanon</option>
+	  <option value="LS">Lesotho</option>
+	  <option value="LR">Liberia</option>
+	  <option value="LY">Libya</option>
+	  <option value="LI">Liechtenstein</option>
+	  <option value="LT">Lithuania</option>
+	  <option value="LU">Luxembourg</option>
+	  <option value="MG">Madagascar</option>
+	  <option value="MW">Malawi</option>
+	  <option value="MY">Malaysia</option>
+	  <option value="MV">Maldives</option>
+	  <option value="ML">Mali</option>
+	  <option value="MT">Malta</option>
+	  <option value="MH">Marshall Islands</option>
+	  <option value="MR">Mauritania</option>
+	  <option value="MU">Mauritius</option>
+	  <option value="MX">Mexico</option>
+	  <option value="FM">Micronesia</option>
+	  <option value="MD">Moldova</option>
+	  <option value="MC">Monaco</option>
+	  <option value="MN">Mongolia</option>
+	  <option value="ME">Montenegro</option>
+	  <option value="MA">Morocco</option>
+	  <option value="MZ">Mozambique</option>
+	  <option value="MM">Myanmar</option>
+	  <option value="NA">Namibia</option>
+	  <option value="NR">Nauru</option>
+	  <option value="NP">Nepal</option>
+	  <option value="NL">Netherlands</option>
+	  <option value="NZ">New Zealand</option>
+	  <option value="NI">Nicaragua</option>
+	  <option value="NE">Niger</option>
+	  <option value="NG">Nigeria</option>
+	  <option value="NO">Norway</option>
+	  <option value="OM">Oman</option>
+	  <option value="PK">Pakistan</option>
+	  <option value="PW">Palau</option>
+	  <option value="PS">Palestine</option>
+	  <option value="PA">Panama</option>
+	  <option value="PG">Papua New Guinea</option>
+	  <option value="PY">Paraguay</option>
+	  <option value="PE">Peru</option>
+	  <option value="PH">Philippines</option>
+	  <option value="PL">Poland</option>
+	  <option value="PT">Portugal</option>
+	  <option value="QA">Qatar</option>
+	  <option value="RO">Romania</option>
+	  <option value="RU">Russia</option>
+	  <option value="RW">Rwanda</option>
+	  <option value="KN">Saint Kitts and Nevis</option>
+	  <option value="LC">Saint Lucia</option>
+	  <option value="VC">Saint Vincent and the Grenadines</option>
+	  <option value="WS">Samoa</option>
+	  <option value="SM">San Marino</option>
+	  <option value="ST">São Tomé and Príncipe</option>
+	  <option value="SA">Saudi Arabia</option>
+	  <option value="SN">Senegal</option>
+	  <option value="RS">Serbia</option>
+	  <option value="SC">Seychelles</option>
+	  <option value="SL">Sierra Leone</option>
+	  <option value="SG">Singapore</option>
+	  <option value="SK">Slovakia</option>
+	  <option value="SI">Slovenia</option>
+	  <option value="SB">Solomon Islands</option>
+	  <option value="SO">Somalia</option>
+	  <option value="ZA">South Africa</option>
+	  <option value="SS">South Sudan</option>
+	  <option value="ES">Spain</option>
+	  <option value="LK">Sri Lanka</option>
+	  <option value="SD">Sudan</option>
+	  <option value="SR">Suriname</option>
+	  <option value="SE">Sweden</option>
+	  <option value="CH">Switzerland</option>
+	  <option value="SY">Syria</option>
+	  <option value="TW">Taiwan</option>
+	  <option value="TJ">Tajikistan</option>
+	  <option value="TZ">Tanzania</option>
+	  <option value="TH">Thailand</option>
+	  <option value="TL">Timor-Leste</option>
+	  <option value="TG">Togo</option>
+	  <option value="TO">Tonga</option>
+	  <option value="TT">Trinidad and Tobago</option>
+	  <option value="TN">Tunisia</option>
+	  <option value="TR">Turkey</option>
+	  <option value="TM">Turkmenistan</option>
+	  <option value="TV">Tuvalu</option>
+	  <option value="UG">Uganda</option>
+	  <option value="UA">Ukraine</option>
+	  <option value="AE">United Arab Emirates</option>
+	  <option value="GB">United Kingdom</option>
+	  <option value="US">United States</option>
+	  <option value="UY">Uruguay</option>
+	  <option value="UZ">Uzbekistan</option>
+	  <option value="VU">Vanuatu</option>
+	  <option value="VA">Vatican City</option>
+	  <option value="VE">Venezuela</option>
+	  <option value="VN">Vietnam</option>
+	  <option value="YE">Yemen</option>
+	  <option value="ZM">Zambia</option>
+	  <option value="ZW">Zimbabwe</option>
+	</select>
+
+
+    <label for="shippingTown">Città:</label>
+    <input type="text" id="shippingTown" placeholder="Inserisci la città" required>
+
+	<label for="shippingProvince">Provincia:</label>
+	<select id="shippingProvince" required>
+	  <option value="">Seleziona la provincia</option>
+	  <option value="AG">Agrigento</option>
+	  <option value="AL">Alessandria</option>
+	  <option value="AN">Ancona</option>
+	  <option value="AO">Aosta</option>
+	  <option value="AR">Arezzo</option>
+	  <option value="AP">Ascoli Piceno</option>
+	  <option value="AT">Asti</option>
+	  <option value="AV">Avellino</option>
+	  <option value="BA">Bari</option>
+	  <option value="BT">Barletta-Andria-Trani</option>
+	  <option value="BL">Belluno</option>
+	  <option value="BN">Benevento</option>
+	  <option value="BG">Bergamo</option>
+	  <option value="BI">Biella</option>
+	  <option value="BO">Bologna</option>
+	  <option value="BZ">Bolzano</option>
+	  <option value="BS">Brescia</option>
+	  <option value="BR">Brindisi</option>
+	  <option value="CA">Cagliari</option>
+	  <option value="CL">Caltanissetta</option>
+	  <option value="CB">Campobasso</option>
+	  <option value="CI">Carbonia-Iglesias</option>
+	  <option value="CE">Caserta</option>
+	  <option value="CT">Catania</option>
+	  <option value="CZ">Catanzaro</option>
+	  <option value="CH">Chieti</option>
+	  <option value="CO">Como</option>
+	  <option value="CS">Cosenza</option>
+	  <option value="CR">Cremona</option>
+	  <option value="KR">Crotone</option>
+	  <option value="CN">Cuneo</option>
+	  <option value="EN">Enna</option>
+	  <option value="FM">Fermo</option>
+	  <option value="FE">Ferrara</option>
+	  <option value="FI">Firenze</option>
+	  <option value="FG">Foggia</option>
+	  <option value="FC">Forlì-Cesena</option>
+	  <option value="FR">Frosinone</option>
+	  <option value="GE">Genova</option>
+	  <option value="GO">Gorizia</option>
+	  <option value="GR">Grosseto</option>
+	  <option value="IM">Imperia</option>
+	  <option value="IS">Isernia</option>
+	  <option value="SP">La Spezia</option>
+	  <option value="AQ">L'Aquila</option>
+	  <option value="LT">Latina</option>
+	  <option value="LE">Lecce</option>
+	  <option value="LC">Lecco</option>
+	  <option value="LI">Livorno</option>
+	  <option value="LO">Lodi</option>
+	  <option value="LU">Lucca</option>
+	  <option value="MC">Macerata</option>
+	  <option value="MN">Mantova</option>
+	  <option value="MS">Massa-Carrara</option>
+	  <option value="MT">Matera</option>
+	  <option value="ME">Messina</option>
+	  <option value="MI">Milano</option>
+	  <option value="MO">Modena</option>
+	  <option value="MB">Monza e della Brianza</option>
+	  <option value="NA">Napoli</option>
+	  <option value="NO">Novara</option>
+	  <option value="NU">Nuoro</option>
+	  <option value="OR">Oristano</option>
+	  <option value="PD">Padova</option>
+	  <option value="PA">Palermo</option>
+	  <option value="PR">Parma</option>
+	  <option value="PV">Pavia</option>
+	  <option value="PG">Perugia</option>
+	  <option value="PU">Pesaro e Urbino</option>
+	  <option value="PE">Pescara</option>
+	  <option value="PC">Piacenza</option>
+	  <option value="PI">Pisa</option>
+	  <option value="PT">Pistoia</option>
+	  <option value="PN">Pordenone</option>
+	  <option value="PZ">Potenza</option>
+	  <option value="PO">Prato</option>
+	  <option value="RG">Ragusa</option>
+	  <option value="RA">Ravenna</option>
+	  <option value="RC">Reggio Calabria</option>
+	  <option value="RE">Reggio Emilia</option>
+	  <option value="RI">Rieti</option>
+	  <option value="RN">Rimini</option>
+	  <option value="RM">Roma</option>
+	  <option value="RO">Rovigo</option>
+	  <option value="SA">Salerno</option>
+	  <option value="VS">Medio Campidano</option>
+	  <option value="SS">Sassari</option>
+	  <option value="SV">Savona</option>
+	  <option value="SI">Siena</option>
+	  <option value="SR">Siracusa</option>
+	  <option value="SO">Sondrio</option>
+	  <option value="SU">Sud Sardegna</option>
+	  <option value="TA">Taranto</option>
+	  <option value="TE">Teramo</option>
+	  <option value="TR">Terni</option>
+	  <option value="TO">Torino</option>
+	  <option value="TP">Trapani</option>
+	  <option value="TN">Trento</option>
+	  <option value="TV">Treviso</option>
+	  <option value="TS">Trieste</option>
+	  <option value="UD">Udine</option>
+	  <option value="VA">Varese</option>
+	  <option value="VE">Venezia</option>
+	  <option value="VB">Verbano-Cusio-Ossola</option>
+	  <option value="VC">Vercelli</option>
+	  <option value="VR">Verona</option>
+	  <option value="VV">Vibo Valentia</option>
+	  <option value="VI">Vicenza</option>
+	  <option value="VT">Viterbo</option>
+	</select>
+	
+    <label for="shippingZipCode">CAP:</label>
+    <input type="text" id="shippingZipCode" placeholder="Inserisci il CAP" required>
+
+    <!-- Nuova Sezione: Ulteriori Campi -->
+    <div class="section-title">Ulteriori Campi</div>
+
+    <label for="email">E-mail:</label>
+    <input type="email" id="email" placeholder="Inserisci l'e-mail" required>
+
+    <label for="pec">PEC:</label>
+    <input type="email" id="pec" placeholder="Inserisci la PEC">
+
+    <label for="phone">Telefono:</label>
+    <input type="tel" id="phone" placeholder="Inserisci il numero di telefono" required>
+	
+	    <label for="category">Categoria:</label>
+    <select id="category" required>
+      <option value="">Seleziona</option>
+      <option value="1">Rivenditori di arredamento/Reseller of forniture products</option>
+      <option value="2">Rivenditori di illuminazione/Reseller of lighting products</option>
+      <option value="3">Contract (progettazione spazi commerciali e domestici)/Contractor (design of commercial and domestic spaces)</option>
+	  <option value="4">Edilizia e costruzioni/Building and costructions</option>
+	  <option value="5">Rivenditori di materiale elettrico/Reseller of electrical equipment</option>
+	  <option value="6">Ferramenta/Hardware store</option>
+	  <option value="7">Bricolage</option>
+    </select>
+
+    <label for="consortium">Fai parte di un consorzio?</label>
+    <select id="consortium" required>
+      <option value="">Seleziona</option>
+      <option value="SI">SI</option>
+      <option value="NO">NO</option>
+    </select>
+
+    <label for="consortiumName">Specifica il consorzio del quale fai parte:</label>
+    <input type="text" id="consortiumName" placeholder="Specifica il consorzio del quale fai parte" required>
+
+    <label for="paymentTerms">Condizioni e Metodi di Pagamento:</label>
+    <textarea id="paymentTerms" rows="3" placeholder="Inserisci le condizioni e i metodi di pagamento" required></textarea>
+
+    <label for="notes">Note Aggiuntive:</label>
+    <textarea id="notes" rows="4" placeholder="Inserisci eventuali note aggiuntive"></textarea>
+
+    <!-- Pulsante per salvare -->
+    <button type="submit">Registrati</button>
+  </form>
+
+  <script>
+    // Funzione per effettuare la chiamata API a OpenAPI
+		async function fetchCompanyData(vatCode) {
+		  const url = `https://test.company.openapi.com/IT-start/${vatCode}`;
+		  const token = "OPENAPI_TOKEN";
+
+		  try {
+			const response = await fetch(url, {
+			  method: "GET",
+			  headers: {
+				"Authorization": `Bearer ${token}`,
+				"Accept": "application/json"
+			  }
+			});
+
+			if (!response.ok) {
+			  throw new Error(`Errore API: ${response.status} ${response.statusText}`);
+			}
+
+			const data = await response.json();
+
+			if (data && data.data && data.data.length > 0) {
+			  const company = data.data[0];
+
+			  // Compila i campi con i dati ricevuti
+			  document.getElementById("companyName").value = company.companyName || "";
+			  document.getElementById("taxCode").value = company.taxCode || "";
+			  document.getElementById("sdiCode").value = company.sdiCode || "";
+			  document.getElementById("address").value = company.address.registeredOffice.streetName || "";
+			  document.getElementById("town").value = company.address.registeredOffice.town || "";
+			  document.getElementById("province").value = company.address.registeredOffice.province || "";
+			  document.getElementById("zipCode").value = company.address.registeredOffice.zipCode || "";
+			  document.getElementById("region").value = company.address.registeredOffice.region.description || "";
+
+			  // Blocca i campi dopo la compilazione automatica
+			  toggleReadonlyFields(true);
+
+			  alert("Dati compilati automaticamente!");
+			} else {
+			  alert("Nessun dato trovato per questa Partita IVA. Puoi inserire i dati manualmente.");
+			  toggleReadonlyFields(false); // Permetti modifica manuale
+			}
+		  } catch (error) {
+			console.error("Errore durante la chiamata API:", error);
+			alert(`Errore durante la chiamata API: ${error.message}`);
+			toggleReadonlyFields(false); // Permetti modifica manuale in caso di errore
+		  }
+		}
+
+		// Funzione per abilitare/disabilitare i campi readonly
+		function toggleReadonlyFields(readonly) {
+		  const fields = [
+			"companyName",
+			"taxCode",
+			"sdiCode",
+			"address",
+			"town",
+			"province",
+			"zipCode",
+			"region"
+		  ];
+
+		  fields.forEach(fieldId => {
+			const field = document.getElementById(fieldId);
+			if (readonly) {
+			  field.setAttribute("readonly", true);
+			} else {
+			  field.removeAttribute("readonly");
+			}
+		  });
+		}
+
+    // Funzione per inviare i dati ad Airtable
+    async function sendDataToAirtable(formData) {
+      const airtableApiKey = "AIRTABLE_TOKEN";
+      const airtableBaseId = "appmFGmGI1IyNOKes";
+      const airtableTableName = "Registrazione Clienti";
+
+      const url = `https://api.airtable.com/v0/${airtableBaseId}/${airtableTableName}`;
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${airtableApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fields: formData,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Errore durante l'invio ad Airtable: ${response.statusText}`);
+        }
+
+        alert("Registrazione completata con successo!");
+      } catch (error) {
+        console.error("Errore durante l'invio ad Airtable:", error);
+        alert("Si è verificato un errore durante la registrazione.");
+      }
+    }
+
+    // Evento per compilare i dati con OpenAPI
+    document.getElementById("fetchDataButton").addEventListener("click", () => {
+      const vatCode = document.getElementById("vatCode").value;
+      if (!vatCode) {
+        alert("Per favore, inserisci una Partita IVA.");
+        return;
+      }
+
+      fetchCompanyData(vatCode);
+    });
+
+    // Evento per salvare i dati su Airtable
+    document.getElementById("customerForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const formData = {
+        "Partita IVA": document.getElementById("vatCode").value,
+        "Nome Azienda": document.getElementById("companyName").value,
+        "Codice Fiscale": document.getElementById("taxCode").value,
+        "Codice SDI": document.getElementById("sdiCode").value,
+        "Indirizzo": document.getElementById("address").value,
+        "Città": document.getElementById("town").value,
+        "Provincia": document.getElementById("province").value,
+        "CAP": document.getElementById("zipCode").value,
+        "Regione": document.getElementById("region").value,
+        "Via Spedizione": document.getElementById("shippingStreet").value,
+        "Numero Civico": document.getElementById("shippingStreetNumber").value,
+        "Paese spedizione": document.getElementById("shippingCountry").value,
+        "Città Spedizione": document.getElementById("shippingTown").value,
+        "Provincia Spedizione": document.getElementById("shippingProvince").value,
+        "CAP spedizione": document.getElementById("shippingZipCode").value,
+        "E-mail": document.getElementById("email").value,
+        "PEC": document.getElementById("pec").value,
+        "Telefono": document.getElementById("phone").value,
+        "Categoria": document.getElementById("category").value,
+        "Consorzio": document.getElementById("consortium").value,
+        "Consorzio1": document.getElementById("consortiumName").value,
+        "Pagamento": document.getElementById("paymentTerms").value,
+        "Note": document.getElementById("notes").value,
+      };
+
+      // Invia i dati ad Airtable
+      sendDataToAirtable(formData);
+    });
+
+    // Abilita/disabilita il campo del consorzio in base alla scelta
+    document.getElementById("consortium").addEventListener("change", function () {
+      const consortiumName = document.getElementById("consortiumName");
+      if (this.value === "SI") {
+        consortiumName.disabled = false;
+        consortiumName.setAttribute("required", "required");
+      } else {
+        consortiumName.disabled = true;
+        consortiumName.removeAttribute("required");
+        consortiumName.value = "";
+      }
+    });
+	
+		// Validazione e gestione del CAP
+	document.getElementById("shippingZipCode").addEventListener("input", function () {
+	  const capInput = this;
+	  const paese = document.getElementById("shippingCountry").value;
+
+	  // Regola: CAP non deve superare 5 cifre
+	  if (capInput.value.length > 5) {
+		capInput.value = capInput.value.slice(0, 5); // Troncamento a 5 cifre
+		alert("Il CAP non può superare le 5 cifre!");
+	  }
+
+	  // Regola: Se il Paese non è Italia, il CAP viene impostato a 00000
+	  if (paese !== "IT") {
+		capInput.value = "00000";
+		capInput.setAttribute("readonly", true);
+	  } else {
+		capInput.removeAttribute("readonly");
+	  }
+	});
+
+	// Aggiorna CAP automaticamente se il Paese cambia
+	document.getElementById("shippingCountry").addEventListener("change", function () {
+	  const capInput = document.getElementById("shippingZipCode");
+	  const paese = this.value;
+
+	  if (paese !== "IT") {
+		capInput.value = "00000";
+		capInput.setAttribute("readonly", true);
+	  } else {
+		capInput.value = "";
+		capInput.removeAttribute("readonly");
+	  }
+	});
+
+  </script>
+</body>
+</html>
