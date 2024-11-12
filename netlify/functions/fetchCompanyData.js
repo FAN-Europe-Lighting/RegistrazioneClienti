@@ -1,27 +1,33 @@
-exports.handler = async (event) => {
-  const vatCode = event.queryStringParameters.vatCode; // Leggi la partita IVA
-  const token = process.env.API_TOKEN; // Token API dalle variabili di ambiente
+const fetch = require('node-fetch');
 
-  if (!vatCode || !token) {
+exports.handler = async (event) => {
+  const vatCode = event.queryStringParameters.vatCode;
+
+  if (!vatCode) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Partita IVA o Token mancante" }),
+      body: JSON.stringify({ error: 'Partita IVA non fornita.' }),
     };
   }
 
+  const OPENAPI_TOKEN = process.env.OPENAPI_TOKEN;
+  const url = `https://test.company.openapi.com/IT-start/${vatCode}`;
+
   try {
-    const response = await fetch(`https://test.company.openapi.com/IT-start/${vatCode}`, {
+    const response = await fetch(url, {
+      method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
+        'Authorization': `Bearer ${OPENAPI_TOKEN}`,
+        'Accept': 'application/json',
       },
     });
 
     if (!response.ok) {
-      throw new Error(`Errore API: ${response.status}`);
+      throw new Error(`Errore API: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
+
     return {
       statusCode: 200,
       body: JSON.stringify(data),
