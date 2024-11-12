@@ -693,6 +693,26 @@
 	  }
 	});
 
+	   // Funzione per bloccare i caratteri ",", "?", e "
+	  function blockInvalidCharacters(field) {
+	    // Espressione regolare per definire i caratteri vietati
+	    const forbiddenCharacters = /["?,]/g; // Blocca ", ?, e "
+	
+	    // Rimuovi i caratteri non validi dal valore del campo
+	    const cleanValue = field.value.replace(forbiddenCharacters, "");
+	
+	    // Mostra un avviso se sono stati rimossi caratteri non validi
+	    if (cleanValue !== field.value) {
+	      alert('Non sono consentiti i seguenti caratteri: ", ?, "');
+	      field.value = cleanValue; // Aggiorna il campo con il valore ripulito
+	    }
+	  }
+	
+	  // Aggiungi un listener per ogni campo di input e textarea
+	  document.querySelectorAll("input, textarea").forEach(field => {
+	    field.addEventListener("input", () => blockInvalidCharacters(field));
+	  }); 
+
   </script>
 </body>
 </html>
