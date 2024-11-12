@@ -532,30 +532,29 @@
 		}
 
  // Funzione per inviare i dati al Google Sheet
-  async function sendDataToGoogleSheet(formData) {
-    const url = "https://script.google.com/macros/s/ID_DEL_TUO_DEPLOYMENT/exec"; // Inserisci il tuo URL Google Apps Script qui
-
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData), // Invio dei dati
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        alert("Registrazione completata con successo!");
-      } else {
-        alert("Errore durante l'invio dei dati al foglio Google.");
-      }
-    } catch (error) {
-      console.error("Errore durante l'invio al foglio Google:", error);
-      alert("Errore durante l'invio dei dati.");
-    }
-  }
+	async function sendDataToGoogleSheet(formData) {
+	  // URL della funzione serverless su Netlify
+	  const url = `/.netlify/functions/sendToGoogleSheet`;
+	
+	  try {
+	    const response = await fetch(url, {
+	      method: "POST",
+	      headers: {
+	        "Content-Type": "application/json",
+	      },
+	      body: JSON.stringify(formData),
+	    });
+	
+	    if (!response.ok) {
+	      throw new Error(`Errore durante l'invio al server: ${response.statusText}`);
+	    }
+	
+	    alert("Registrazione completata con successo!");
+	  } catch (error) {
+	    console.error("Errore durante l'invio al server:", error);
+	    alert("Errore durante la registrazione.");
+	  }
+	}
 
   // Evento per la compilazione automatica con OpenAPI
   document.getElementById("fetchDataButton").addEventListener("click", () => {
