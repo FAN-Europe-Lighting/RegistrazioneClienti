@@ -531,30 +531,76 @@
 		  });
 		}
 
-    // Funzione per inviare i dati ad Airtable
-	async function sendDataToAirtable(formData) {
-	  // URL dell'endpoint serverless
-	  const url = `/.netlify/functions/sendToAirtable`;
-	
-	  try {
-	    const response = await fetch(url, {
-	      method: "POST",
-	      headers: {
-	        "Content-Type": "application/json",
-	      },
-	      body: JSON.stringify(formData),
-	    });
-	
-	    if (!response.ok) {
-	      throw new Error(`Errore durante l'invio ad Airtable: ${response.statusText}`);
-	    }
-	
-	    alert("Registrazione completata con successo!");
-	  } catch (error) {
-	    console.error("Errore durante l'invio ad Airtable:", error);
-	    alert("Errore durante l'invio dei dati.");
-	  }
-	}
+ // Funzione per inviare i dati al Google Sheet
+  async function sendDataToGoogleSheet(formData) {
+    const url = "https://script.google.com/macros/s/ID_DEL_TUO_DEPLOYMENT/exec"; // Inserisci il tuo URL Google Apps Script qui
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData), // Invio dei dati
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("Registrazione completata con successo!");
+      } else {
+        alert("Errore durante l'invio dei dati al foglio Google.");
+      }
+    } catch (error) {
+      console.error("Errore durante l'invio al foglio Google:", error);
+      alert("Errore durante l'invio dei dati.");
+    }
+  }
+
+  // Evento per la compilazione automatica con OpenAPI
+  document.getElementById("fetchDataButton").addEventListener("click", () => {
+    const vatCode = document.getElementById("vatCode").value;
+    if (!vatCode) {
+      alert("Per favore, inserisci una Partita IVA.");
+      return;
+    }
+
+    fetchCompanyData(vatCode); // Funzione già esistente per OpenAPI
+  });
+
+  // Evento per salvare i dati al Google Sheet
+  document.getElementById("customerForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = {
+      vatCode: document.getElementById("vatCode").value,
+      companyName: document.getElementById("companyName").value,
+      taxCode: document.getElementById("taxCode").value,
+      sdiCode: document.getElementById("sdiCode").value,
+      address: document.getElementById("address").value,
+      town: document.getElementById("town").value,
+      province: document.getElementById("province").value,
+      zipCode: document.getElementById("zipCode").value,
+      region: document.getElementById("region").value,
+      shippingStreet: document.getElementById("shippingStreet").value,
+      shippingStreetNumber: document.getElementById("shippingStreetNumber").value,
+      shippingCountry: document.getElementById("shippingCountry").value,
+      shippingTown: document.getElementById("shippingTown").value,
+      shippingProvince: document.getElementById("shippingProvince").value,
+      shippingZipCode: document.getElementById("shippingZipCode").value,
+      email: document.getElementById("email").value,
+      pec: document.getElementById("pec").value,
+      phone: document.getElementById("phone").value,
+      category: document.getElementById("category").value,
+      consortium: document.getElementById("consortium").value,
+      consortiumName: document.getElementById("consortiumName").value,
+      paymentTerms: document.getElementById("paymentTerms").value,
+      notes: document.getElementById("notes").value,
+    };
+
+    // Invio dei dati al Google Sheet
+    sendDataToGoogleSheet(formData);
+  });
 
     // Evento per compilare i dati con OpenAPI
     document.getElementById("fetchDataButton").addEventListener("click", () => {
