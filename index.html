@@ -532,34 +532,29 @@
 		}
 
     // Funzione per inviare i dati ad Airtable
-    async function sendDataToAirtable(formData) {
-      const airtableApiKey = "AIRTABLE_TOKEN";
-      const airtableBaseId = "appmFGmGI1IyNOKes";
-      const airtableTableName = "Registrazione Clienti";
-
-      const url = `https://api.airtable.com/v0/${airtableBaseId}/${airtableTableName}`;
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${airtableApiKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fields: formData,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Errore durante l'invio ad Airtable: ${response.statusText}`);
-        }
-
-        alert("Registrazione completata con successo!");
-      } catch (error) {
-        console.error("Errore durante l'invio ad Airtable:", error);
-        alert("Si è verificato un errore durante la registrazione.");
-      }
-    }
+	async function sendDataToAirtable(formData) {
+	  // URL dell'endpoint serverless
+	  const url = `/.netlify/functions/sendToAirtable`;
+	
+	  try {
+	    const response = await fetch(url, {
+	      method: "POST",
+	      headers: {
+	        "Content-Type": "application/json",
+	      },
+	      body: JSON.stringify(formData),
+	    });
+	
+	    if (!response.ok) {
+	      throw new Error(`Errore durante l'invio ad Airtable: ${response.statusText}`);
+	    }
+	
+	    alert("Registrazione completata con successo!");
+	  } catch (error) {
+	    console.error("Errore durante l'invio ad Airtable:", error);
+	    alert("Errore durante l'invio dei dati.");
+	  }
+	}
 
     // Evento per compilare i dati con OpenAPI
     document.getElementById("fetchDataButton").addEventListener("click", () => {
