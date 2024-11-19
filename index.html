@@ -58,9 +58,18 @@
   <h1 style="text-align: center;">Registrazione Cliente</h1>
   <form id="customerForm">
     <!-- Sezione principale -->
-    <label for="vatCode">Partita IVA:</label>
-    <input type="text" id="vatCode" placeholder="Inserisci la Partita IVA (solo parte numerica!)" required>
-    <button type="button" id="fetchDataButton">Compila automaticamente</button>
+	<label for="vatCode">Partita IVA:</label>
+	<input 
+	  type="text" 
+	  id="vatCode" 
+	  placeholder="Inserisci la Partita IVA (solo parte numerica!)" 
+	  required 
+	  pattern="[0-9]+" 
+	  title="Sono ammessi solo numeri."
+	>
+	<span id="errorVatCode" style="color: red; display: none;">Inserisci solo numeri.</span>
+	<button type="button" id="fetchDataButton">Compila automaticamente</button>
+
 
     <!-- Campi compilati automaticamente -->
     <label for="companyName">Nome Azienda:</label>
@@ -677,6 +686,17 @@
 	  } else {
 		capInput.removeAttribute("readonly");
 	  }
+	});
+
+	// Regola: Partita IVA solo numerica
+	document.getElementById("vatCode").addEventListener("input", function () {
+		const errorSpan = document.getElementById("errorVatCode");
+		if (/[^0-9]/.test(this.value)) {
+			this.value = this.value.replace(/[^0-9]/g, ""); // Rimuove qualsiasi carattere non numerico
+			errorSpan.style.display = "inline"; // Mostra il messaggio d'errore
+		} else {
+			errorSpan.style.display = "none"; // Nasconde il messaggio d'errore
+		}
 	});
 
 	// Aggiorna CAP automaticamente se il Paese cambia
