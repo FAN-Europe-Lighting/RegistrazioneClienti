@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 exports.handler = async (event) => {
   const { vatCode } = event.queryStringParameters;
 
-  const url = `https://test.company.openapi.com/IT-start/${vatCode}`;
+  const url = `https://company.openapi.com/IT-start/${vatCode}`;
   const token = process.env.OPENAPI_TOKEN; // Usa la variabile ambiente per il token
 
   try {
