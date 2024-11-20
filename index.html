@@ -476,94 +476,60 @@
     <button type="submit">Registrati</button>
   </form>
 
-  <script>
-    // Funzione per effettuare la chiamata API a OpenAPI
-	async function fetchCompanyData(vatCode) {
-	  // URL dell'endpoint serverless su Netlify
-	  const url = `/.netlify/functions/fetchCompanyData?vatCode=${vatCode}`;
-	
-	  try {
-	    const response = await fetch(url, {
-	      method: 'GET', // Metodo HTTP
-	    });
-	
-	    if (!response.ok) {
-	      throw new Error(`Errore API: ${response.status} ${response.statusText}`);
-	    }
-	
-	    const data = await response.json();
-	
-	    if (data && data.data && data.data.length > 0) {
-	      const company = data.data[0];
-	      
-	      // Aggiorna i campi del form con i dati ricevuti
-	      document.getElementById("companyName").value = company.companyName || "";
-	      document.getElementById("taxCode").value = company.taxCode || "";
-	      document.getElementById("sdiCode").value = company.sdiCode || "";
-	      document.getElementById("address").value = company.address.registeredOffice.streetName || "";
-	      document.getElementById("town").value = company.address.registeredOffice.town || "";
-	      document.getElementById("province").value = company.address.registeredOffice.province || "";
-	      document.getElementById("zipCode").value = company.address.registeredOffice.zipCode || "";
-	      document.getElementById("region").value = company.address.registeredOffice.region.description || "";
-	
-	      alert("Dati caricati con successo!");
-	    } else {
-	      alert("Nessun dato trovato per questa Partita IVA.");
-	    }
-	  } catch (error) {
-	    console.error("Errore durante la chiamata API:", error);
-	    alert(`Errore durante la chiamata API: ${error.message}`);
-	  }
-	}
+<script>
+  // Funzione per mascherare tutti i caratteri di un valore con asterischi
+  function maskValue(value) {
+    if (!value) return "";
+    return "*".repeat(value.length); // Rende tutto il valore come asterischi
+  }
 
+  // Funzione per effettuare la chiamata API a OpenAPI e mascherare i dati visibili
+  async function fetchCompanyData(vatCode) {
+    const url = `/.netlify/functions/fetchCompanyData?vatCode=${vatCode}`;
 
-		// Funzione per abilitare/disabilitare i campi readonly
-		function toggleReadonlyFields(readonly) {
-		  const fields = [
-			"companyName",
-			"taxCode",
-			"sdiCode",
-			"address",
-			"town",
-			"province",
-			"zipCode",
-			"region"
-		  ];
+    try {
+      const response = await fetch(url, {
+        method: 'GET', // Metodo HTTP
+      });
 
-		  fields.forEach(fieldId => {
-			const field = document.getElementById(fieldId);
-			if (readonly) {
-			  field.setAttribute("readonly", true);
-			} else {
-			  field.removeAttribute("readonly");
-			}
-		  });
-		}
+      if (!response.ok) {
+        throw new Error(`Errore API: ${response.status} ${response.statusText}`);
+      }
 
- // Funzione per inviare i dati al Google Sheet
-	async function sendDataToGoogleSheet(formData) {
-	  // URL della funzione serverless su Netlify
-	  const url = `/.netlify/functions/sendToGoogleSheet`;
-	
-	  try {
-	    const response = await fetch(url, {
-	      method: "POST",
-	      headers: {
-	        "Content-Type": "application/json",
-	      },
-	      body: JSON.stringify(formData),
-	    });
-	
-	    if (!response.ok) {
-	      throw new Error(`Errore durante l'invio al server: ${response.statusText}`);
-	    }
-	
-	    alert("Registrazione completata con successo!");
-	  } catch (error) {
-	    console.error("Errore durante l'invio al server:", error);
-	    alert("Errore durante la registrazione.");
-	  }
-	}
+      const data = await response.json();
+
+      if (data && data.data && data.data.length > 0) {
+        const company = data.data[0];
+
+        // Popola i campi del form con i valori reali (non mascherati)
+        document.getElementById("companyName").value = company.companyName || "";
+        document.getElementById("taxCode").value = company.taxCode || "";
+        document.getElementById("sdiCode").value = company.sdiCode || "";
+        document.getElementById("address").value = company.address.registeredOffice.streetName || "";
+        document.getElementById("town").value = company.address.registeredOffice.town || "";
+        document.getElementById("province").value = company.address.registeredOffice.province || "";
+        document.getElementById("zipCode").value = company.address.registeredOffice.zipCode || "";
+        document.getElementById("region").value = company.address.registeredOffice.region.description || "";
+
+        // Mostra solo asterischi nei campi visibili
+        document.getElementById("companyName").placeholder = maskValue(company.companyName || "");
+        document.getElementById("taxCode").placeholder = maskValue(company.taxCode || "");
+        document.getElementById("sdiCode").placeholder = maskValue(company.sdiCode || "");
+        document.getElementById("address").placeholder = maskValue(company.address.registeredOffice.streetName || "");
+        document.getElementById("town").placeholder = maskValue(company.address.registeredOffice.town || "");
+        document.getElementById("province").placeholder = maskValue(company.address.registeredOffice.province || "");
+        document.getElementById("zipCode").placeholder = maskValue(company.address.registeredOffice.zipCode || "");
+        document.getElementById("region").placeholder = maskValue(company.address.registeredOffice.region.description || "");
+
+        alert("Dati caricati con successo!");
+      } else {
+        alert("Nessun dato trovato per questa Partita IVA.");
+      }
+    } catch (error) {
+      console.error("Errore durante la chiamata API:", error);
+      alert(`Errore durante la chiamata API: ${error.message}`);
+    }
+  }
 
   // Evento per la compilazione automatica con OpenAPI
   document.getElementById("fetchDataButton").addEventListener("click", () => {
@@ -575,6 +541,30 @@
 
     fetchCompanyData(vatCode); // Funzione già esistente per OpenAPI
   });
+
+  // Funzione per inviare i dati al Google Sheet
+  async function sendDataToGoogleSheet(formData) {
+    const url = `/.netlify/functions/sendToGoogleSheet`;
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Errore durante l'invio al server: ${response.statusText}`);
+      }
+
+      alert("Registrazione completata con successo!");
+    } catch (error) {
+      console.error("Errore durante l'invio al server:", error);
+      alert("Errore durante la registrazione.");
+    }
+  }
 
   // Evento per salvare i dati al Google Sheet
   document.getElementById("customerForm").addEventListener("submit", (event) => {
@@ -606,133 +596,57 @@
       notes: document.getElementById("notes").value,
     };
 
-    // Invio dei dati al Google Sheet
     sendDataToGoogleSheet(formData);
   });
 
-    // Evento per compilare i dati con OpenAPI
-    document.getElementById("fetchDataButton").addEventListener("click", () => {
-      const vatCode = document.getElementById("vatCode").value;
-      if (!vatCode) {
-        alert("Per favore, inserisci una Partita IVA.");
-        return;
-      }
+  // Funzione per bloccare caratteri non validi (extra, se necessario)
+  function blockInvalidCharacters(field) {
+    const forbiddenCharacters = /["?,]/g; // Blocca ", ?, e "
+    const cleanValue = field.value.replace(forbiddenCharacters, "");
 
-      fetchCompanyData(vatCode);
-    });
+    if (cleanValue !== field.value) {
+      alert('Non sono consentiti i seguenti caratteri: ", ?, "');
+      field.value = cleanValue;
+    }
+  }
 
-    // Evento per salvare i dati su Airtable
-    document.getElementById("customerForm").addEventListener("submit", (event) => {
-      event.preventDefault();
+  // Aggiungi un listener per ogni campo di input e textarea (opzionale)
+  document.querySelectorAll("input, textarea").forEach(field => {
+    field.addEventListener("input", () => blockInvalidCharacters(field));
+  });
 
-      const formData = {
-        "Partita IVA": document.getElementById("vatCode").value,
-        "Nome Azienda": document.getElementById("companyName").value,
-        "Codice Fiscale": document.getElementById("taxCode").value,
-        "Codice SDI": document.getElementById("sdiCode").value,
-        "Indirizzo": document.getElementById("address").value,
-        "Città": document.getElementById("town").value,
-        "Provincia": document.getElementById("province").value,
-        "CAP": document.getElementById("zipCode").value,
-        "Regione": document.getElementById("region").value,
-        "Via Spedizione": document.getElementById("shippingStreet").value,
-        "Numero Civico": document.getElementById("shippingStreetNumber").value,
-        "Paese spedizione": document.getElementById("shippingCountry").value,
-        "Città Spedizione": document.getElementById("shippingTown").value,
-        "Provincia Spedizione": document.getElementById("shippingProvince").value,
-        "CAP spedizione": document.getElementById("shippingZipCode").value,
-        "E-mail": document.getElementById("email").value,
-        "PEC": document.getElementById("pec").value,
-        "Telefono": document.getElementById("phone").value,
-        "Categoria": document.getElementById("category").value,
-        "Consorzio": document.getElementById("consortium").value,
-        "Consorzio1": document.getElementById("consortiumName").value,
-        "Pagamento": document.getElementById("paymentTerms").value,
-        "Note": document.getElementById("notes").value,
-      };
+  // Validazione e gestione del CAP
+  document.getElementById("shippingZipCode").addEventListener("input", function () {
+    const capInput = this;
+    const paese = document.getElementById("shippingCountry").value;
 
-      // Invia i dati ad Airtable
-      sendDataToAirtable(formData);
-    });
+    // Regola: CAP non deve superare 5 cifre
+    if (capInput.value.length > 5) {
+      capInput.value = capInput.value.slice(0, 5); // Troncamento a 5 cifre
+      alert("Il CAP non può superare le 5 cifre!");
+    }
 
-    // Abilita/disabilita il campo del consorzio in base alla scelta
-    document.getElementById("consortium").addEventListener("change", function () {
-      const consortiumName = document.getElementById("consortiumName");
-      if (this.value === "SI") {
-        consortiumName.disabled = false;
-        consortiumName.setAttribute("required", "required");
-      } else {
-        consortiumName.disabled = true;
-        consortiumName.removeAttribute("required");
-        consortiumName.value = "";
-      }
-    });
-	
-		// Validazione e gestione del CAP
-	document.getElementById("shippingZipCode").addEventListener("input", function () {
-	  const capInput = this;
-	  const paese = document.getElementById("shippingCountry").value;
+    // Regola: Se il Paese non è Italia, il CAP viene impostato a 00000
+    if (paese !== "IT") {
+      capInput.value = "00000";
+      capInput.setAttribute("readonly", true);
+    } else {
+      capInput.removeAttribute("readonly");
+    }
+  });
 
-	  // Regola: CAP non deve superare 5 cifre
-	  if (capInput.value.length > 5) {
-		capInput.value = capInput.value.slice(0, 5); // Troncamento a 5 cifre
-		alert("Il CAP non può superare le 5 cifre!");
-	  }
-
-	  // Regola: Se il Paese non è Italia, il CAP viene impostato a 00000
-	  if (paese !== "IT") {
-		capInput.value = "00000";
-		capInput.setAttribute("readonly", true);
-	  } else {
-		capInput.removeAttribute("readonly");
-	  }
-	});
-
-	// Regola: Partita IVA solo numerica
-	document.getElementById("vatCode").addEventListener("input", function () {
-		const errorSpan = document.getElementById("errorVatCode");
-		if (/[^0-9]/.test(this.value)) {
-			this.value = this.value.replace(/[^0-9]/g, ""); // Rimuove qualsiasi carattere non numerico
-			errorSpan.style.display = "inline"; // Mostra il messaggio d'errore
-		} else {
-			errorSpan.style.display = "none"; // Nasconde il messaggio d'errore
-		}
-	});
-
-	// Aggiorna CAP automaticamente se il Paese cambia
-	document.getElementById("shippingCountry").addEventListener("change", function () {
-	  const capInput = document.getElementById("shippingZipCode");
-	  const paese = this.value;
-
-	  if (paese !== "IT") {
-		capInput.value = "00000";
-		capInput.setAttribute("readonly", true);
-	  } else {
-		capInput.value = "";
-		capInput.removeAttribute("readonly");
-	  }
-	});
-
-	   // Funzione per bloccare i caratteri ",", "?", e "
-	  function blockInvalidCharacters(field) {
-	    // Espressione regolare per definire i caratteri vietati
-	    const forbiddenCharacters = /["?,]/g; // Blocca ", ?, e "
-	
-	    // Rimuovi i caratteri non validi dal valore del campo
-	    const cleanValue = field.value.replace(forbiddenCharacters, "");
-	
-	    // Mostra un avviso se sono stati rimossi caratteri non validi
-	    if (cleanValue !== field.value) {
-	      alert('Non sono consentiti i seguenti caratteri: ", ?, "');
-	      field.value = cleanValue; // Aggiorna il campo con il valore ripulito
-	    }
-	  }
-	
-	  // Aggiungi un listener per ogni campo di input e textarea
-	  document.querySelectorAll("input, textarea").forEach(field => {
-	    field.addEventListener("input", () => blockInvalidCharacters(field));
-	  }); 
-
-  </script>
+  // Abilita/disabilita il campo del consorzio in base alla scelta
+  document.getElementById("consortium").addEventListener("change", function () {
+    const consortiumName = document.getElementById("consortiumName");
+    if (this.value === "SI") {
+      consortiumName.disabled = false;
+      consortiumName.setAttribute("required", "required");
+    } else {
+      consortiumName.disabled = true;
+      consortiumName.removeAttribute("required");
+      consortiumName.value = "";
+    }
+  });
+</script>
 </body>
 </html>
