@@ -578,11 +578,16 @@ document.getElementById("fetchDataButton").addEventListener("click", () => {
   button.disabled = true;
   button.textContent = "Caricamento...";
 
-  fetchCompanyData(vatCode).catch((error) => {
-    console.error("Errore durante la chiamata API:", error);
-    alert("Errore durante la chiamata API. Riprova.");
-  });
+  fetchCompanyData(vatCode)
+    .then(() => {
+      button.textContent = "Compilazione effettuata";
+    })
+    .catch((error) => {
+      console.error("Errore durante la chiamata API:", error);
+      alert("Errore durante la chiamata API. Riprova.");
+    });
 });
+
 
 
   // Evento per il salvataggio (invio valori reali al server)
