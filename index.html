@@ -502,10 +502,20 @@
   // Funzione per effettuare la chiamata API a OpenAPI
   async function fetchCompanyData(vatCode) {
     const url = `/.netlify/functions/fetchCompanyData?vatCode=${vatCode}`;
+    const fieldsToEnable = [
+      "companyName",
+      "taxCode",
+      "sdiCode",
+      "address",
+      "town",
+      "province",
+      "zipCode",
+      "region"
+    ];
 
     try {
       const response = await fetch(url, {
-        method: 'GET', // Metodo HTTP
+        method: 'GET',
       });
 
       if (!response.ok) {
@@ -532,12 +542,23 @@
 
         alert("Dati caricati con successo!");
       } else {
-        alert("Nessun dato trovato per questa Partita IVA.");
+        alert("Nessun dato trovato per questa Partita IVA. Compila manualmente i campi.");
+        enableAndMakeFieldsRequired(fieldsToEnable);
       }
     } catch (error) {
       console.error("Errore durante la chiamata API:", error);
-      alert(`Errore durante la chiamata API: ${error.message}`);
+      alert("Errore durante la chiamata API. Compila manualmente i campi.");
+      enableAndMakeFieldsRequired(fieldsToEnable);
     }
+  }
+
+  // Funzione per abilitare e rendere obbligatori i campi in caso di errore API
+  function enableAndMakeFieldsRequired(fields) {
+    fields.forEach((fieldId) => {
+      const field = document.getElementById(fieldId);
+      field.removeAttribute("readonly");
+      field.setAttribute("required", "required");
+    });
   }
 
   // Funzione per inviare i dati al server (con valori reali)
@@ -564,89 +585,91 @@
     }
   }
 
-// Evento per la compilazione automatica con OpenAPI
-document.getElementById("fetchDataButton").addEventListener("click", () => {
-  const vatCode = document.getElementById("vatCode").value;
-  const button = document.getElementById("fetchDataButton");
+  // Evento per la compilazione automatica con OpenAPI
+  document.getElementById("fetchDataButton").addEventListener("click", () => {
+    const vatCode = document.getElementById("vatCode").value;
+    const button = document.getElementById("fetchDataButton");
 
-  if (!vatCode) {
-    alert("Per favore, inserisci una Partita IVA.");
-    return;
-  }
+    if (!vatCode) {
+      alert("Per favore, inserisci una Partita IVA.");
+      return;
+    }
 
-  // Disabilita il pulsante al clic
-  button.disabled = true;
-  button.textContent = "Caricamento...";
+    // Disabilita il pulsante al clic
+    button.disabled = true;
+    button.textContent = "Caricamento...";
 
-  fetchCompanyData(vatCode)
-    .then(() => {
-      button.textContent = "Compilazione effettuata";
-    })
-    .catch((error) => {
-      console.error("Errore durante la chiamata API:", error);
-      alert("Errore durante la chiamata API. Riprova.");
-    });
-});
-
-
-
-// Evento per il salvataggio (invio valori reali al server)
-document.getElementById("customerForm").addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  // Ottieni il pulsante di submit
-  const submitButton = event.target.querySelector('button[type="submit"]');
-
-  // Cambia stato del pulsante
-  submitButton.disabled = true;
-  submitButton.textContent = "Registrazione in corso...";
-
-  const fieldsToSubmit = [
-    "companyName",
-    "taxCode",
-    "sdiCode",
-    "address",
-    "town",
-    "province",
-    "zipCode",
-    "region",
-    "vatCode",
-    "shippingStreet",
-    "shippingStreetNumber",
-    "shippingCountry",
-    "shippingTown",
-    "shippingProvince",
-    "shippingZipCode",
-    "email",
-    "pec",
-    "phone",
-    "category",
-    "consortium",
-    "consortiumName",
-    "paymentTerms",
-    "notes"
-  ];
-
-  const formData = {};
-
-  fieldsToSubmit.forEach((fieldId) => {
-    const field = document.getElementById(fieldId);
-    formData[fieldId] = field.dataset.realValue || field.value; // Usa il valore reale se presente
+    fetchCompanyData(vatCode)
+      .then(() => {
+        button.textContent = "Compilazione effettuata";
+      })
+      .catch((error) => {
+        console.error("Errore durante la chiamata API:", error);
+        alert("Errore durante la chiamata API. Riprova.");
+        button.textContent = "Compila automaticamente";
+      })
+      .finally(() => {
+        button.disabled = false;
+      });
   });
 
-  sendDataToGoogleSheet(formData)
-    .then(() => {
-      // Cambia stato al completamento
-      submitButton.textContent = "Registrazione effettuata";
-    })
-    .catch((error) => {
-      console.error("Errore durante la registrazione:", error);
-      alert("Errore durante la registrazione. Riprova.");
-      // Riabilita il pulsante in caso di errore
-      submitButton.disabled = false;
-      submitButton.textContent = "Registrati";
+  // Evento per il salvataggio (invio valori reali al server)
+  document.getElementById("customerForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    // Ottieni il pulsante di submit
+    const submitButton = event.target.querySelector('button[type="submit"]');
+
+    // Cambia stato del pulsante
+    submitButton.disabled = true;
+    submitButton.textContent = "Registrazione in corso...";
+
+    const fieldsToSubmit = [
+      "companyName",
+      "taxCode",
+      "sdiCode",
+      "address",
+      "town",
+      "province",
+      "zipCode",
+      "region",
+      "vatCode",
+      "shippingStreet",
+      "shippingStreetNumber",
+      "shippingCountry",
+      "shippingTown",
+      "shippingProvince",
+      "shippingZipCode",
+      "email",
+      "pec",
+      "phone",
+      "category",
+      "consortium",
+      "consortiumName",
+      "paymentTerms",
+      "notes"
+    ];
+
+    const formData = {};
+
+    fieldsToSubmit.forEach((fieldId) => {
+      const field = document.getElementById(fieldId);
+      formData[fieldId] = field.dataset.realValue || field.value; // Usa il valore reale se presente
     });
-});
+
+    sendDataToGoogleSheet(formData)
+      .then(() => {
+        // Cambia stato al completamento
+        submitButton.textContent = "Registrazione effettuata";
+      })
+      .catch((error) => {
+        console.error("Errore durante la registrazione:", error);
+        alert("Errore durante la registrazione. Riprova.");
+        // Riabilita il pulsante in caso di errore
+        submitButton.disabled = false;
+        submitButton.textContent = "Registrati";
+      });
+  });
 </script>
 </body>
 </html>
