@@ -590,45 +590,63 @@ document.getElementById("fetchDataButton").addEventListener("click", () => {
 
 
 
-  // Evento per il salvataggio (invio valori reali al server)
-  document.getElementById("customerForm").addEventListener("submit", (event) => {
-    event.preventDefault();
+// Evento per il salvataggio (invio valori reali al server)
+document.getElementById("customerForm").addEventListener("submit", (event) => {
+  event.preventDefault();
 
-    const fieldsToSubmit = [
-      "companyName",
-      "taxCode",
-      "sdiCode",
-      "address",
-      "town",
-      "province",
-      "zipCode",
-      "region",
-      "vatCode",
-      "shippingStreet",
-      "shippingStreetNumber",
-      "shippingCountry",
-      "shippingTown",
-      "shippingProvince",
-      "shippingZipCode",
-      "email",
-      "pec",
-      "phone",
-      "category",
-      "consortium",
-      "consortiumName",
-      "paymentTerms",
-      "notes"
-    ];
+  // Ottieni il pulsante di submit
+  const submitButton = event.target.querySelector('button[type="submit"]');
 
-    const formData = {};
+  // Cambia stato del pulsante
+  submitButton.disabled = true;
+  submitButton.textContent = "Registrazione in corso...";
 
-    fieldsToSubmit.forEach((fieldId) => {
-      const field = document.getElementById(fieldId);
-      formData[fieldId] = field.dataset.realValue || field.value; // Usa il valore reale se presente
-    });
+  const fieldsToSubmit = [
+    "companyName",
+    "taxCode",
+    "sdiCode",
+    "address",
+    "town",
+    "province",
+    "zipCode",
+    "region",
+    "vatCode",
+    "shippingStreet",
+    "shippingStreetNumber",
+    "shippingCountry",
+    "shippingTown",
+    "shippingProvince",
+    "shippingZipCode",
+    "email",
+    "pec",
+    "phone",
+    "category",
+    "consortium",
+    "consortiumName",
+    "paymentTerms",
+    "notes"
+  ];
 
-    sendDataToGoogleSheet(formData); // Invia al server
+  const formData = {};
+
+  fieldsToSubmit.forEach((fieldId) => {
+    const field = document.getElementById(fieldId);
+    formData[fieldId] = field.dataset.realValue || field.value; // Usa il valore reale se presente
   });
+
+  sendDataToGoogleSheet(formData)
+    .then(() => {
+      // Cambia stato al completamento
+      submitButton.textContent = "Registrazione effettuata";
+    })
+    .catch((error) => {
+      console.error("Errore durante la registrazione:", error);
+      alert("Errore durante la registrazione. Riprova.");
+      // Riabilita il pulsante in caso di errore
+      submitButton.disabled = false;
+      submitButton.textContent = "Registrati";
+    });
+});
 </script>
 </body>
 </html>
