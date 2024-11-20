@@ -564,16 +564,26 @@
     }
   }
 
-  // Evento per la compilazione automatica con OpenAPI
-  document.getElementById("fetchDataButton").addEventListener("click", () => {
-    const vatCode = document.getElementById("vatCode").value;
-    if (!vatCode) {
-      alert("Per favore, inserisci una Partita IVA.");
-      return;
-    }
+// Evento per la compilazione automatica con OpenAPI
+document.getElementById("fetchDataButton").addEventListener("click", () => {
+  const vatCode = document.getElementById("vatCode").value;
+  const button = document.getElementById("fetchDataButton");
 
-    fetchCompanyData(vatCode); // Effettua la chiamata API
+  if (!vatCode) {
+    alert("Per favore, inserisci una Partita IVA.");
+    return;
+  }
+
+  // Disabilita il pulsante al clic
+  button.disabled = true;
+  button.textContent = "Caricamento...";
+
+  fetchCompanyData(vatCode).catch((error) => {
+    console.error("Errore durante la chiamata API:", error);
+    alert("Errore durante la chiamata API. Riprova.");
   });
+});
+
 
   // Evento per il salvataggio (invio valori reali al server)
   document.getElementById("customerForm").addEventListener("submit", (event) => {
