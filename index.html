@@ -477,13 +477,29 @@
   </form>
 
 <script>
-  // Funzione per mascherare tutti i caratteri di un valore con asterischi
-  function maskValue(value) {
-    if (!value) return "";
-    return "*".repeat(value.length); // Rende tutto il valore come asterischi
+  // Funzione per mascherare i campi visibili con asterischi
+  function maskFields() {
+    const fieldsToMask = [
+      "companyName",
+      "taxCode",
+      "sdiCode",
+      "address",
+      "town",
+      "province",
+      "zipCode",
+      "region"
+    ];
+
+    fieldsToMask.forEach((fieldId) => {
+      const field = document.getElementById(fieldId);
+      if (field.value) {
+        field.dataset.realValue = field.value; // Salva il valore reale nel dataset
+        field.value = "*".repeat(field.value.length); // Mostra asterischi
+      }
+    });
   }
 
-  // Funzione per effettuare la chiamata API a OpenAPI e mascherare i dati visibili
+  // Funzione per effettuare la chiamata API a OpenAPI
   async function fetchCompanyData(vatCode) {
     const url = `/.netlify/functions/fetchCompanyData?vatCode=${vatCode}`;
 
@@ -501,7 +517,7 @@
       if (data && data.data && data.data.length > 0) {
         const company = data.data[0];
 
-        // Popola i campi del form con i valori reali (non mascherati)
+        // Popola i campi del form con i valori reali
         document.getElementById("companyName").value = company.companyName || "";
         document.getElementById("taxCode").value = company.taxCode || "";
         document.getElementById("sdiCode").value = company.sdiCode || "";
@@ -511,15 +527,8 @@
         document.getElementById("zipCode").value = company.address.registeredOffice.zipCode || "";
         document.getElementById("region").value = company.address.registeredOffice.region.description || "";
 
-        // Mostra solo asterischi nei campi visibili
-        document.getElementById("companyName").placeholder = maskValue(company.companyName || "");
-        document.getElementById("taxCode").placeholder = maskValue(company.taxCode || "");
-        document.getElementById("sdiCode").placeholder = maskValue(company.sdiCode || "");
-        document.getElementById("address").placeholder = maskValue(company.address.registeredOffice.streetName || "");
-        document.getElementById("town").placeholder = maskValue(company.address.registeredOffice.town || "");
-        document.getElementById("province").placeholder = maskValue(company.address.registeredOffice.province || "");
-        document.getElementById("zipCode").placeholder = maskValue(company.address.registeredOffice.zipCode || "");
-        document.getElementById("region").placeholder = maskValue(company.address.registeredOffice.region.description || "");
+        // Maschera i campi visibili
+        maskFields();
 
         alert("Dati caricati con successo!");
       } else {
@@ -531,18 +540,7 @@
     }
   }
 
-  // Evento per la compilazione automatica con OpenAPI
-  document.getElementById("fetchDataButton").addEventListener("click", () => {
-    const vatCode = document.getElementById("vatCode").value;
-    if (!vatCode) {
-      alert("Per favore, inserisci una Partita IVA.");
-      return;
-    }
-
-    fetchCompanyData(vatCode); // Funzione già esistente per OpenAPI
-  });
-
-  // Funzione per inviare i dati al Google Sheet
+  // Funzione per inviare i dati al server (con valori reali)
   async function sendDataToGoogleSheet(formData) {
     const url = `/.netlify/functions/sendToGoogleSheet`;
 
@@ -566,86 +564,55 @@
     }
   }
 
-  // Evento per salvare i dati al Google Sheet
+  // Evento per la compilazione automatica con OpenAPI
+  document.getElementById("fetchDataButton").addEventListener("click", () => {
+    const vatCode = document.getElementById("vatCode").value;
+    if (!vatCode) {
+      alert("Per favore, inserisci una Partita IVA.");
+      return;
+    }
+
+    fetchCompanyData(vatCode); // Effettua la chiamata API
+  });
+
+  // Evento per il salvataggio (invio valori reali al server)
   document.getElementById("customerForm").addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const formData = {
-      vatCode: document.getElementById("vatCode").value,
-      companyName: document.getElementById("companyName").value,
-      taxCode: document.getElementById("taxCode").value,
-      sdiCode: document.getElementById("sdiCode").value,
-      address: document.getElementById("address").value,
-      town: document.getElementById("town").value,
-      province: document.getElementById("province").value,
-      zipCode: document.getElementById("zipCode").value,
-      region: document.getElementById("region").value,
-      shippingStreet: document.getElementById("shippingStreet").value,
-      shippingStreetNumber: document.getElementById("shippingStreetNumber").value,
-      shippingCountry: document.getElementById("shippingCountry").value,
-      shippingTown: document.getElementById("shippingTown").value,
-      shippingProvince: document.getElementById("shippingProvince").value,
-      shippingZipCode: document.getElementById("shippingZipCode").value,
-      email: document.getElementById("email").value,
-      pec: document.getElementById("pec").value,
-      phone: document.getElementById("phone").value,
-      category: document.getElementById("category").value,
-      consortium: document.getElementById("consortium").value,
-      consortiumName: document.getElementById("consortiumName").value,
-      paymentTerms: document.getElementById("paymentTerms").value,
-      notes: document.getElementById("notes").value,
-    };
+    const fieldsToSubmit = [
+      "companyName",
+      "taxCode",
+      "sdiCode",
+      "address",
+      "town",
+      "province",
+      "zipCode",
+      "region",
+      "vatCode",
+      "shippingStreet",
+      "shippingStreetNumber",
+      "shippingCountry",
+      "shippingTown",
+      "shippingProvince",
+      "shippingZipCode",
+      "email",
+      "pec",
+      "phone",
+      "category",
+      "consortium",
+      "consortiumName",
+      "paymentTerms",
+      "notes"
+    ];
 
-    sendDataToGoogleSheet(formData);
-  });
+    const formData = {};
 
-  // Funzione per bloccare caratteri non validi (extra, se necessario)
-  function blockInvalidCharacters(field) {
-    const forbiddenCharacters = /["?,]/g; // Blocca ", ?, e "
-    const cleanValue = field.value.replace(forbiddenCharacters, "");
+    fieldsToSubmit.forEach((fieldId) => {
+      const field = document.getElementById(fieldId);
+      formData[fieldId] = field.dataset.realValue || field.value; // Usa il valore reale se presente
+    });
 
-    if (cleanValue !== field.value) {
-      alert('Non sono consentiti i seguenti caratteri: ", ?, "');
-      field.value = cleanValue;
-    }
-  }
-
-  // Aggiungi un listener per ogni campo di input e textarea (opzionale)
-  document.querySelectorAll("input, textarea").forEach(field => {
-    field.addEventListener("input", () => blockInvalidCharacters(field));
-  });
-
-  // Validazione e gestione del CAP
-  document.getElementById("shippingZipCode").addEventListener("input", function () {
-    const capInput = this;
-    const paese = document.getElementById("shippingCountry").value;
-
-    // Regola: CAP non deve superare 5 cifre
-    if (capInput.value.length > 5) {
-      capInput.value = capInput.value.slice(0, 5); // Troncamento a 5 cifre
-      alert("Il CAP non può superare le 5 cifre!");
-    }
-
-    // Regola: Se il Paese non è Italia, il CAP viene impostato a 00000
-    if (paese !== "IT") {
-      capInput.value = "00000";
-      capInput.setAttribute("readonly", true);
-    } else {
-      capInput.removeAttribute("readonly");
-    }
-  });
-
-  // Abilita/disabilita il campo del consorzio in base alla scelta
-  document.getElementById("consortium").addEventListener("change", function () {
-    const consortiumName = document.getElementById("consortiumName");
-    if (this.value === "SI") {
-      consortiumName.disabled = false;
-      consortiumName.setAttribute("required", "required");
-    } else {
-      consortiumName.disabled = true;
-      consortiumName.removeAttribute("required");
-      consortiumName.value = "";
-    }
+    sendDataToGoogleSheet(formData); // Invia al server
   });
 </script>
 </body>
