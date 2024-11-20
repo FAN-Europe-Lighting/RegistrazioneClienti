@@ -1,12 +1,5 @@
 const fetch = require('node-fetch');
 
-// Funzione per mascherare i dati (mostra solo le prime 3 cifre)
-function maskValue(value) {
-  if (!value) return ""; // Gestione valore nullo o non definito
-  if (value.length <= 3) return value; // Non mascherare se troppo corto
-  return value.slice(0, 3) + "*".repeat(value.length - 3); // Mostra le prime 3 e maschera il resto
-}
-
 exports.handler = async (event) => {
   const { vatCode } = event.queryStringParameters;
 
@@ -30,32 +23,10 @@ exports.handler = async (event) => {
     }
 
     const data = await response.json();
-
-    if (data && data.data && data.data.length > 0) {
-      const company = data.data[0];
-
-      // Maschera i dati prima di inviarli al frontend
-      const maskedData = {
-        companyName: company.companyName || "",
-        taxCode: maskValue(company.taxCode || ""),
-        sdiCode: maskValue(company.sdiCode || ""),
-        address: maskValue(company.address.registeredOffice.streetName || ""),
-        town: maskValue(company.address.registeredOffice.town || ""),
-        province: maskValue(company.address.registeredOffice.province || ""),
-        zipCode: maskValue(company.address.registeredOffice.zipCode || ""),
-        region: maskValue(company.address.registeredOffice.region.description || ""),
-      };
-
-      return {
-        statusCode: 200,
-        body: JSON.stringify(maskedData),
-      };
-    } else {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ error: "Nessun dato trovato per questa Partita IVA" }),
-      };
-    }
+    return {
+      statusCode: 200,
+      body: JSON.stringify(data),
+    };
   } catch (error) {
     return {
       statusCode: 500,
