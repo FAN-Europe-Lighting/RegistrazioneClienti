@@ -500,66 +500,82 @@
   }
 
   // Funzione per effettuare la chiamata API a OpenAPI
-  async function fetchCompanyData(vatCode) {
-    const url = `/.netlify/functions/fetchCompanyData?vatCode=${vatCode}`;
-    const fieldsToEnable = [
-      "companyName",
-      "taxCode",
-      "sdiCode",
-      "address",
-      "town",
-      "province",
-      "zipCode",
-      "region"
-    ];
+async function fetchCompanyData(vatCode) {
+  const url = `/.netlify/functions/fetchCompanyData?vatCode=${vatCode}`;
+  const fieldsToDisable = [
+    "companyName",
+    "taxCode",
+    "sdiCode",
+    "address",
+    "town",
+    "province",
+    "zipCode",
+    "region",
+    "vatCode",
+    "shippingStreet",
+    "shippingStreetNumber",
+    "shippingCountry",
+    "shippingTown",
+    "shippingProvince",
+    "shippingZipCode",
+    "email",
+    "pec",
+    "phone",
+    "category",
+    "consortium",
+    "consortiumName",
+    "paymentTerms",
+    "notes"
+  ];
 
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-      });
-
-      if (!response.ok) {
-        throw new Error(`Errore API: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      if (data && data.data && data.data.length > 0) {
-        const company = data.data[0];
-
-        // Popola i campi del form con i valori reali
-        document.getElementById("companyName").value = company.companyName || "";
-        document.getElementById("taxCode").value = company.taxCode || "";
-        document.getElementById("sdiCode").value = company.sdiCode || "";
-        document.getElementById("address").value = company.address.registeredOffice.streetName || "";
-        document.getElementById("town").value = company.address.registeredOffice.town || "";
-        document.getElementById("province").value = company.address.registeredOffice.province || "";
-        document.getElementById("zipCode").value = company.address.registeredOffice.zipCode || "";
-        document.getElementById("region").value = company.address.registeredOffice.region.description || "";
-
-        // Maschera i campi visibili
-        maskFields();
-
-        alert("Dati caricati con successo!");
-      } else {
-        alert("Nessun dato trovato per questa Partita IVA. Compila manualmente i campi.");
-        enableAndMakeFieldsRequired(fieldsToEnable);
-      }
-    } catch (error) {
-      console.error("Errore durante la chiamata API:", error);
-      alert("Errore durante la chiamata API. Compila manualmente i campi.");
-      enableAndMakeFieldsRequired(fieldsToEnable);
-    }
-  }
-
-  // Funzione per abilitare e rendere obbligatori i campi in caso di errore API
-  function enableAndMakeFieldsRequired(fields) {
-    fields.forEach((fieldId) => {
-      const field = document.getElementById(fieldId);
-      field.removeAttribute("readonly");
-      field.setAttribute("required", "required");
+  try {
+    const response = await fetch(url, {
+      method: "GET",
     });
+
+    if (!response.ok) {
+      throw new Error(`Errore API: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    if (data && data.data && data.data.length > 0) {
+      const company = data.data[0];
+
+      // Popola i campi del form con i valori reali
+      document.getElementById("companyName").value = company.companyName || "";
+      document.getElementById("taxCode").value = company.taxCode || "";
+      document.getElementById("sdiCode").value = company.sdiCode || "";
+      document.getElementById("address").value = company.address.registeredOffice.streetName || "";
+      document.getElementById("town").value = company.address.registeredOffice.town || "";
+      document.getElementById("province").value = company.address.registeredOffice.province || "";
+      document.getElementById("zipCode").value = company.address.registeredOffice.zipCode || "";
+      document.getElementById("region").value = company.address.registeredOffice.region.description || "";
+
+      // Maschera i campi visibili
+      maskFields();
+
+      alert("Dati caricati con successo!");
+    } else {
+      handleApiError(fieldsToDisable);
+    }
+  } catch (error) {
+    console.error("Errore durante la chiamata API:", error);
+    handleApiError(fieldsToDisable);
   }
+}
+
+// Funzione per gestire l'errore API
+function handleApiError(fieldsToDisable) {
+  // Disabilita tutti i campi del form
+  fieldsToDisable.forEach((fieldId) => {
+    const field = document.getElementById(fieldId);
+    field.setAttribute("disabled", "disabled");
+  });
+
+  // Mostra il messaggio di errore
+  alert("Partita IVA non trovata, per completare la registrazione si prega di effettuare richiesta a info@faneurope.it");
+}
 
   // Funzione per inviare i dati al server (con valori reali)
   async function sendDataToGoogleSheet(formData) {
