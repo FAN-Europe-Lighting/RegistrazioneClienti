@@ -443,6 +443,15 @@
 
     <label for="phone">Telefono:</label>
     <input type="tel" id="phone" placeholder="Inserisci il numero di telefono" required>
+
+    <label for="conosciuti">Come ci hai conosciuti:</label>
+    <input type="text" id="conosciuti" placeholder="Inserisci come ci hai conosciuti" required>
+
+    <label for="agente">Specificare agente:</label>
+    <input type="text" id="agent" placeholder="Inserisci il nome dell'agente" required>
+
+    <label for="iban">IBAN:</label>
+    <input type="text" id="iban" placeholder="Inserisci il tuo IBAN" required>
 	
 	    <label for="category">Categoria:</label>
     <select id="category" required>
@@ -659,6 +668,9 @@ function handleApiError(fieldsToDisable) {
       "email",
       "pec",
       "phone",
+      "conosciuti",
+      "agente",
+      "iban"
       "category",
       "consortium",
       "consortiumName",
