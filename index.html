@@ -508,6 +508,24 @@
     });
   }
 
+// Funzione per bloccare i caratteri non consentiti
+function blockInvalidCharacters(event) {
+  // Lista di caratteri non consentiti
+  const invalidCharacters = /["\,]/g;
+
+  // Controlla se il valore contiene caratteri non consentiti
+  if (invalidCharacters.test(event.target.value)) {
+    alert('Non puoi inserire i caratteri "," o " " in questo campo.');
+    // Rimuovi i caratteri non consentiti
+    event.target.value = event.target.value.replace(invalidCharacters, "");
+  }
+}
+
+// Applica l'evento "input" a tutti i campi del modulo
+document.querySelectorAll("input, textarea").forEach((field) => {
+  field.addEventListener("input", blockInvalidCharacters);
+});
+
   // Funzione per effettuare la chiamata API a OpenAPI
 async function fetchCompanyData(vatCode) {
   const url = `/.netlify/functions/fetchCompanyData?vatCode=${vatCode}`;
