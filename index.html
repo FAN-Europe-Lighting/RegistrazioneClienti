@@ -442,7 +442,9 @@
     <input type="email" id="pec" placeholder="Inserisci la PEC">
 
     <label for="phone">Telefono:</label>
-    <input type="tel" id="phone" placeholder="Inserisci il numero di telefono" required>
+<input type="tel" id="phone" placeholder="Inserisci il numero di telefono" required maxlength="10" pattern="[0-9]{10}" title="Inserisci un numero di telefono valido (10 cifre)">
+<span id="phoneError" style="color: red; display: none;">È possibile inserire solo un numero. Per aggiungere altri riferimenti telefonici, inserirli nel campo 'Note aggiuntive'.</span>
+
 
     <label for="conosciuti">Come ci hai conosciuti:</label>
     <input type="text" id="conosciuti" placeholder="Inserisci come ci hai conosciuti" required>
@@ -524,6 +526,33 @@ function blockInvalidCharacters(event) {
 // Applica l'evento "input" a tutti i campi del modulo
 document.querySelectorAll("input, textarea").forEach((field) => {
   field.addEventListener("input", blockInvalidCharacters);
+});
+
+	document.getElementById("phone").addEventListener("input", function(event) {
+    const phoneInput = event.target;
+    const phoneError = document.getElementById("phoneError");
+
+    // Rimuove caratteri non numerici
+    phoneInput.value = phoneInput.value.replace(/\D/g, "");
+
+    // Controllo validità numero
+    if (phoneInput.value.length > 10) {
+        phoneInput.value = phoneInput.value.slice(0, 10); // Taglia il numero alle prime 10 cifre
+        phoneError.style.display = "inline"; // Mostra il messaggio di errore
+    } else {
+        phoneError.style.display = "none"; // Nasconde l'errore se la lunghezza è valida
+    }
+});
+
+// Verifica lunghezza del numero al momento dell'invio del modulo
+document.getElementById("customerForm").addEventListener("submit", function(event) {
+    const phoneInput = document.getElementById("phone");
+    const phoneError = document.getElementById("phoneError");
+
+    if (phoneInput.value.length !== 10) {
+        phoneError.style.display = "inline"; // Mostra il messaggio di errore
+        event.preventDefault(); // Blocca l'invio del modulo
+    }
 });
 
   // Funzione per effettuare la chiamata API a OpenAPI
