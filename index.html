@@ -453,18 +453,30 @@
     <input type="text" id="agente" placeholder="Inserisci il nome dell'agente" required>
 
     <label for="iban">IBAN:</label>
-	  <input
+
+<!-- Campo ESCA: serve solo a "catturare" l'autofill del browser -->
+<input
+  type="text"
+  name="iban"
+  autocomplete="iban"
+  tabindex="-1"
+  aria-hidden="true"
+  style="position:absolute; left:-9999px; top:-9999px; height:0; width:0; opacity:0;"
+>
+
+<!-- Campo REALE: quello che l'utente compila -->
+<input
   type="text"
   id="iban"
-  name="iban"
+  name="iban_real"
   placeholder="Inserisci il tuo IBAN"
   minlength="27"
   maxlength="27"
   required
   autocomplete="new-password"
-  readonly
-  onfocus="this.readOnly = false;"
+  inputmode="text"
 >
+
 	  
 	    <label for="category">Categoria:</label>
     <select id="category" required>
